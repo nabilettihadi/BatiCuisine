@@ -12,7 +12,7 @@ public class Projet {
     private double coutTotal;
     private EtatProjet etatProjet;
     private Client client;
-    private List<Composant> composants;
+    private List<Material> materiaux;
     private List<MainDoeuvre> mainDoeuvre;
     private Devis devis;
 
@@ -21,14 +21,14 @@ public class Projet {
         this.id = UUID.randomUUID();
     }
 
-    public Projet(UUID id, String nomProjet, double margeBeneficiaire, double coutTotal, EtatProjet etatProjet, Client client, List<Composant> composants, List<MainDoeuvre> mainDoeuvre, Devis devis) {
+    public Projet(UUID id, String nomProjet, double margeBeneficiaire, double coutTotal, EtatProjet etatProjet, Client client, List<Material> materiaux, List<MainDoeuvre> mainDoeuvre, Devis devis) {
         this.id = id;
         this.nomProjet = nomProjet;
         this.margeBeneficiaire = margeBeneficiaire;
         this.coutTotal = coutTotal;
         this.etatProjet = etatProjet;
         this.client = client;
-        this.composants = composants;
+        this.materiaux = materiaux;
         this.mainDoeuvre = mainDoeuvre;
         this.devis = devis;
     }
@@ -82,12 +82,12 @@ public class Projet {
         this.client = client;
     }
 
-    public List<Composant> getComposants() {
-        return composants;
+    public List<Material> getMateriaux() {
+        return materiaux;
     }
 
-    public void setComposants(List<Composant> composants) {
-        this.composants = composants;
+    public void setMateriaux(List<Material> materiaux) {
+        this.materiaux = materiaux;
     }
 
     public List<MainDoeuvre> getMainDoeuvre() {
@@ -105,4 +105,6 @@ public class Projet {
     public void setDevis(Devis devis) {
         this.devis = devis;
     }
+
+
 }
