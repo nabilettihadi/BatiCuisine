@@ -37,4 +37,10 @@ public class Material extends Composant {
     public double calculerCoutTotal() {
         return (getCoutUnitaire() * getQuantite() + coutTransport) * coefficientQualite * (1 + getTauxTVA());
     }
+
+    public String toString() {
+        return "Main d'oeuvre [ID: " + getId() + ", Nom: " + getNom() +
+                ", Coût Unitaire: " + getCoutUnitaire() + ", Quantité: " + getQuantite() +
+                ", TVA: " + getTauxTVA() + "]";
+    }
 }

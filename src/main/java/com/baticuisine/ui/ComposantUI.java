@@ -17,16 +17,14 @@ public class ComposantUI {
     private final Scanner scanner;
     private final ComposantService<MainDoeuvre> mainDoeuvreService;
     private final ComposantService<Material> materialService;
-    private final ComposantService<Composant> composantService; // Add composantService
 
-    public ComposantUI(ComposantService<MainDoeuvre> mainDoeuvreService, ComposantService<Material> materialService, ComposantService<Composant> composantService) {
+    public ComposantUI(ComposantService<MainDoeuvre> mainDoeuvreService, ComposantService<Material> materialService) {
         this.mainDoeuvreService = mainDoeuvreService;
         this.materialService = materialService;
-        this.composantService = composantService; // Initialize composantService
         this.scanner = new Scanner(System.in);
     }
 
-    public void startComposantMenu() {
+    public void startComposantMenu() throws SQLException {
         while (true) {
             System.out.println("=== Menu de Gestion des Composants ===");
             System.out.println("1. Ajouter un composant");
@@ -123,44 +121,78 @@ public class ComposantUI {
         while (true) {
             try {
                 int option = scanner.nextInt();
-                scanner.nextLine(); // Clear the buffer
+                scanner.nextLine();
                 return option;
             } catch (InputMismatchException e) {
                 System.out.println("Erreur: veuillez entrer une valeur entière valide.");
-                scanner.nextLine(); // Clear the buffer
+                scanner.nextLine();
             }
         }
     }
 
-    private void displayAllComposants() {
-        try {
-            List<Composant> composants = composantService.findAll();
-            if (composants.isEmpty()) {
-                System.out.println("Aucun composant trouvé.");
-            } else {
-                for (Composant composant : composants) {
-                    afficherDetailsComposant(composant);
-                }
+    private void displayAllComposants() throws SQLException {
+        System.out.println("=== Affichage de tous les composants (MainDoeuvre et Material) ===");
+
+
+        List<MainDoeuvre> mainDoeuvreList = mainDoeuvreService.findAll();
+        if (mainDoeuvreList.isEmpty()) {
+            System.out.println("Aucune main d'œuvre trouvée.");
+        } else {
+            System.out.println("\n--- Liste des MAIN_DOEUVRE ---");
+            for (MainDoeuvre mainDoeuvre : mainDoeuvreList) {
+                System.out.println("ID: " + mainDoeuvre.getId());
+                System.out.println("Nom: " + mainDoeuvre.getNom());
+                System.out.println("Coût Unitaire: " + mainDoeuvre.getCoutUnitaire());
+                System.out.println("Quantité: " + mainDoeuvre.getQuantite());
+                System.out.println("Taux de TVA: " + mainDoeuvre.getTauxTVA());
+                System.out.println("Heures de Travail: " + mainDoeuvre.getHeuresTravail());
+                System.out.println("Productivité Ouvrier: " + mainDoeuvre.getProductiviteOuvrier());
+                System.out.println("Coût Total: " + mainDoeuvre.calculerCoutTotal());
+                System.out.println("-----------------------------------");
             }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de l'affichage des composants: " + e.getMessage());
+        }
+
+
+        List<Material> materialList = materialService.findAll();
+        if (materialList.isEmpty()) {
+            System.out.println("Aucun matériau trouvé.");
+        } else {
+            System.out.println("\n--- Liste des MATERIAL ---");
+            for (Material material : materialList) {
+                System.out.println("ID: " + material.getId());
+                System.out.println("Nom: " + material.getNom());
+                System.out.println("Coût Unitaire: " + material.getCoutUnitaire());
+                System.out.println("Quantité: " + material.getQuantite());
+                System.out.println("Taux de TVA: " + material.getTauxTVA());
+                System.out.println("Coût de Transport: " + material.getCoutTransport());
+                System.out.println("Coefficient de Qualité: " + material.getCoefficientQualite());
+                System.out.println("Coût Total: " + material.calculerCoutTotal());
+                System.out.println("-----------------------------------");
+            }
         }
     }
 
-    private void displayComposantById() {
-        try {
-            System.out.print("Entrez l'ID du composant à rechercher (format UUID): ");
-            UUID id = UUID.fromString(scanner.nextLine());
-            Composant composant = composantService.findById(id);
-            if (composant != null) {
-                afficherDetailsComposant(composant);
-            } else {
-                System.out.println("Composant non trouvé.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche du composant: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erreur: " + e.getMessage());
+
+
+    private void displayComposantById() throws SQLException {
+        System.out.print("Entrez l'ID du composant: ");
+        UUID id = UUID.fromString(scanner.nextLine());
+
+
+        MainDoeuvre mainDoeuvre = mainDoeuvreService.findById(id);
+        if (mainDoeuvre != null) {
+            System.out.println("Composant trouvé (MAIN_DOEUVRE) : ");
+            System.out.println(mainDoeuvre);
+            return;
+        }
+
+
+        Material material = materialService.findById(id);
+        if (material != null) {
+            System.out.println("Composant trouvé (MATERIAL) : ");
+            System.out.println(material);
+        } else {
+            System.out.println("Aucun composant trouvé avec cet ID.");
         }
     }
 
@@ -188,23 +220,22 @@ public class ComposantUI {
         try {
             System.out.print("Entrez l'ID du composant à mettre à jour (format UUID): ");
             UUID id = UUID.fromString(scanner.nextLine());
-            Composant composant = composantService.findById(id);
-            if (composant != null) {
-                System.out.print("Entrez le nouveau nom (actuel: " + composant.getNom() + "): ");
-                String nom = scanner.nextLine();
-                System.out.print("Entrez le nouveau coût unitaire (actuel: " + composant.getCoutUnitaire() + "): ");
-                double coutUnitaire = saisirDouble();
-                System.out.print("Entrez la nouvelle quantité (actuelle: " + composant.getQuantite() + "): ");
-                double quantite = saisirDouble();
-                System.out.print("Entrez le nouveau taux de TVA (actuel: " + composant.getTauxTVA() + "): ");
-                double tauxTVA = saisirDouble();
 
-                composant.setNom(nom);
-                composant.setCoutUnitaire(coutUnitaire);
-                composant.setQuantite(quantite);
-                composant.setTauxTVA(tauxTVA);
-                composantService.update(composant);
-                System.out.println("Composant mis à jour avec succès.");
+
+            MainDoeuvre mainDoeuvre = mainDoeuvreService.findById(id);
+            if (mainDoeuvre != null) {
+                updateComposantDetails(mainDoeuvre);
+                mainDoeuvreService.update(mainDoeuvre);
+                System.out.println("Main d'œuvre mise à jour avec succès.");
+                return;
+            }
+
+
+            Material material = materialService.findById(id);
+            if (material != null) {
+                updateComposantDetails(material);
+                materialService.update(material);
+                System.out.println("Matériau mis à jour avec succès.");
             } else {
                 System.out.println("Composant non trouvé.");
             }
@@ -215,13 +246,39 @@ public class ComposantUI {
         }
     }
 
+
+    private void updateComposantDetails(Composant composant) {
+        System.out.print("Entrez le nouveau nom (actuel: " + composant.getNom() + "): ");
+        String nom = scanner.nextLine();
+        System.out.print("Entrez le nouveau coût unitaire (actuel: " + composant.getCoutUnitaire() + "): ");
+        double coutUnitaire = saisirDouble();
+        System.out.print("Entrez la nouvelle quantité (actuelle: " + composant.getQuantite() + "): ");
+        double quantite = saisirDouble();
+        System.out.print("Entrez le nouveau taux de TVA (actuel: " + composant.getTauxTVA() + "): ");
+        double tauxTVA = saisirDouble();
+
+        composant.setNom(nom);
+        composant.setCoutUnitaire(coutUnitaire);
+        composant.setQuantite(quantite);
+        composant.setTauxTVA(tauxTVA);
+    }
+
     private void deleteComposant() {
         try {
             System.out.print("Entrez l'ID du composant à supprimer (format UUID): ");
             UUID id = UUID.fromString(scanner.nextLine());
-            boolean deleted = composantService.delete(id);
-            if (deleted) {
-                System.out.println("Composant supprimé avec succès.");
+
+
+            boolean deletedMainDoeuvre = mainDoeuvreService.delete(id);
+            if (deletedMainDoeuvre) {
+                System.out.println("Main d'œuvre supprimée avec succès.");
+                return;
+            }
+
+
+            boolean deletedMaterial = materialService.delete(id);
+            if (deletedMaterial) {
+                System.out.println("Matériau supprimé avec succès.");
             } else {
                 System.out.println("Composant non trouvé.");
             }
@@ -231,4 +288,5 @@ public class ComposantUI {
             System.out.println("Erreur: " + e.getMessage());
         }
     }
+
 }

@@ -37,7 +37,7 @@ public class Main {
             ComposantService<Composant> composantService = null;
 
 
-            ComposantUI composantUI = new ComposantUI(mainDoeuvreService, materialService, composantService);
+            ComposantUI composantUI = new ComposantUI(mainDoeuvreService, materialService);
 
             Scanner scanner = new Scanner(System.in);
             while (true) {
