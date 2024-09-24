@@ -1,14 +1,6 @@
 import main.java.com.baticuisine.database.DatabaseConnection;
-import main.java.com.baticuisine.implR.MainDoeuvreRepositoryImpl;
-import main.java.com.baticuisine.implS.ClientServiceImpl;
-import main.java.com.baticuisine.implR.ClientRepositoryImpl;
-import main.java.com.baticuisine.implR.DevisRepositoryImpl;
-import main.java.com.baticuisine.implS.DevisServiceImpl;
-import main.java.com.baticuisine.implR.MaterialRepositoryImpl;
-import main.java.com.baticuisine.implS.MainDoeuvreServiceImpl;
-import main.java.com.baticuisine.implS.MaterialServiceImpl;
-import main.java.com.baticuisine.implR.ProjetRepositoryImpl;
-import main.java.com.baticuisine.implS.ProjetServiceImpl;
+import main.java.com.baticuisine.implR.*;
+import main.java.com.baticuisine.implS.*;
 import main.java.com.baticuisine.model.MainDoeuvre;
 import main.java.com.baticuisine.model.Material;
 import main.java.com.baticuisine.service.ClientService;
@@ -19,6 +11,7 @@ import main.java.com.baticuisine.ui.ClientUI;
 import main.java.com.baticuisine.ui.ComposantUI;
 import main.java.com.baticuisine.ui.DevisUI;
 import main.java.com.baticuisine.ui.ProjetUI;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -26,32 +19,25 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
-
-            // Initialisation des repositories et services
+            // Initialisation des repositories
             ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connection);
-            ClientService clientService = new ClientServiceImpl(clientRepository);
-            ClientUI clientUI = new ClientUI(clientService);
-
             MaterialRepositoryImpl materialRepository = new MaterialRepositoryImpl(connection);
             MainDoeuvreRepositoryImpl mainDoeuvreRepository = new MainDoeuvreRepositoryImpl(connection);
-
-            ComposantService<MainDoeuvre> mainDoeuvreService = new MainDoeuvreServiceImpl(mainDoeuvreRepository);
-            ComposantService<Material> materialService = new MaterialServiceImpl(materialRepository);
-
-            ComposantUI composantUI = new ComposantUI(mainDoeuvreService, materialService);
-
-            // Initialisation des Devis
             DevisRepositoryImpl devisRepository = new DevisRepositoryImpl(connection);
-            DevisService devisService = new DevisServiceImpl(devisRepository);
-
-
             ProjetRepositoryImpl projetRepository = new ProjetRepositoryImpl(connection);
+
+            // Initialisation des services
+            ClientService clientService = new ClientServiceImpl(clientRepository);
+            ComposantService<Material> materialService = new MaterialServiceImpl(materialRepository);
+            ComposantService<MainDoeuvre> mainDoeuvreService = new MainDoeuvreServiceImpl(mainDoeuvreRepository);
+            DevisService devisService = new DevisServiceImpl(devisRepository);
             ProjetService projetService = new ProjetServiceImpl(projetRepository);
+
+            // Initialisation des interfaces utilisateur
+            ClientUI clientUI = new ClientUI(clientService);
+            ComposantUI composantUI = new ComposantUI(mainDoeuvreService, materialService);
             DevisUI devisUI = new DevisUI(devisService, clientService, projetService);
             ProjetUI projetUI = new ProjetUI(projetService, clientService, materialService, mainDoeuvreService, devisService);
-
-
-
 
             // Menu principal
             Scanner scanner = new Scanner(System.in);
@@ -78,7 +64,7 @@ public class Main {
                         projetUI.startProjetMenu();
                         break;
                     case 4:
-                        devisUI.afficherMenuDevis();  // Appel du menu des devis
+                        devisUI.afficherMenuDevis();
                         break;
                     case 0:
                         System.out.println("Au revoir !");
