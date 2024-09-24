@@ -42,7 +42,7 @@ CREATE TABLE Composant (
                            nom VARCHAR(255) NOT NULL,
                            cout_unitaire DECIMAL(10, 2) NOT NULL,
                            quantite DECIMAL(10, 2) NOT NULL,
-                           type_composant type_composant NOT NULL,
+                           type_composant typecomposant NOT NULL,
                            taux_tva DECIMAL(5, 2) NOT NULL
 );
 

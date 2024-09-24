@@ -4,7 +4,7 @@ import java.util.UUID;
 import main.java.com.baticuisine.enums.TypeComposant;
 
 public abstract class Composant {
-    private UUID id;
+    private final UUID id;
     private String nom;
     private double coutUnitaire;
     private double quantite;
@@ -12,8 +12,8 @@ public abstract class Composant {
     private double tauxTVA;
 
     // Constructeur
-    public Composant(String nom, double coutUnitaire, double quantite, TypeComposant typeComposant, double tauxTVA) {
-        this.id = UUID.randomUUID();
+    public Composant(UUID id, String nom, double coutUnitaire, double quantite, TypeComposant typeComposant, double tauxTVA) {
+        this.id = id;
         this.nom = nom;
         this.coutUnitaire = coutUnitaire;
         this.quantite = quantite;
@@ -66,6 +66,6 @@ public abstract class Composant {
         this.tauxTVA = tauxTVA;
     }
 
-    // Méthode abstraite pour calculer le coût total
+
     public abstract double calculerCoutTotal();
 }
