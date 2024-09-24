@@ -142,5 +142,29 @@ public class DevisUI {
         }
     }
 
+    private void accepterDevis() {
+        System.out.print("Entrez l'ID du devis que vous souhaitez accepter : ");
+        String devisId = scanner.nextLine();
+
+        try {
+            UUID devisUuid = UUID.fromString(devisId);
+            Optional<Devis> devisOpt = devisService.getDevisById(devisUuid);
+
+            if (devisOpt.isPresent()) {
+                Devis devis = devisOpt.get();
+                if (!devis.isAccepte()) {
+                    devis.setAccepte(true);
+                    devisService.updateDevis(devis);
+                    System.out.println("Le devis a été accepté avec succès !");
+                } else {
+                    System.out.println("Ce devis a déjà été accepté.");
+                }
+            } else {
+                System.out.println("Devis non trouvé.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("L'ID du devis est invalide.");
+        }
+    }
 
 }
