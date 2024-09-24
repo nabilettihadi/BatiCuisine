@@ -1,6 +1,8 @@
 package main.java.com.baticuisine.implR;
 
+import main.java.com.baticuisine.model.Client;
 import main.java.com.baticuisine.model.Devis;
+import main.java.com.baticuisine.model.Projet;
 import main.java.com.baticuisine.repository.DevisRepository;
 
 import java.sql.*;
@@ -17,8 +19,13 @@ public class DevisRepositoryImpl implements DevisRepository {
     }
 
     @Override
+
     public Optional<Devis> findById(UUID id) {
-        String sql = "SELECT * FROM devis WHERE id = ?";
+        String sql = "SELECT d.*, c.*, p.* " +
+                "FROM devis d " +
+                "JOIN client c ON d.client_id = c.id " +
+                "JOIN projet p ON d.projet_id = p.id " +
+                "WHERE d.id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setObject(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -32,10 +39,13 @@ public class DevisRepositoryImpl implements DevisRepository {
         return Optional.empty();
     }
 
-    @Override
+
     public List<Devis> findAll() {
         List<Devis> devisList = new ArrayList<>();
-        String sql = "SELECT * FROM devis";
+        String sql = "SELECT d.*, c.*, p.* " +
+                "FROM devis d " +
+                "JOIN client c ON d.client_id = c.id " +
+                "JOIN projet p ON d.projet_id = p.id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -94,14 +104,24 @@ public class DevisRepositoryImpl implements DevisRepository {
     }
 
     private Devis mapResultSetToDevis(ResultSet rs) throws SQLException {
+
+        Projet projet = new Projet();
+        projet.setId((UUID) rs.getObject("projet_id"));
+        projet.setNomProjet(rs.getString("nom_projet"));
+
+
+        Client client = new Client();
+        client.setId((UUID) rs.getObject("client_id"));
+        client.setNom(rs.getString("nom"));
+
         return new Devis(
                 (UUID) rs.getObject("id"),
                 rs.getDouble("montant_estime"),
                 rs.getDate("date_emission").toLocalDate(),
                 rs.getDate("date_validite").toLocalDate(),
                 rs.getBoolean("accepte"),
-                null,
-                null
+                projet,
+                client
         );
     }
 }
