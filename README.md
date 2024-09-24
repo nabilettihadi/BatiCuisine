@@ -1,4 +1,4 @@
-#Bati-Cuisine - Application d'Estimation des Coûts de Rénovation de Cuisines
+### Bati-Cuisine - Application d'Estimation des Coûts de Rénovation de Cuisines
 
 ## Description
 **Bati-Cuisine** est une application Java conçue pour les professionnels de la construction et de la rénovation de cuisines. Elle permet de gérer efficacement les projets de rénovation en calculant les coûts des matériaux, de la main-d'œuvre, et en générant des devis détaillés pour les clients. L'application prend en compte les taxes (TVA) et les marges bénéficiaires, fournissant une estimation claire et précise pour chaque projet.
