@@ -39,7 +39,7 @@ public class Material extends Composant {
     }
 
     public String toString() {
-        return "Main d'oeuvre [ID: " + getId() + ", Nom: " + getNom() +
+        return "Material [ID: " + getId() + ", Nom: " + getNom() +
                 ", Coût Unitaire: " + getCoutUnitaire() + ", Quantité: " + getQuantite() +
                 ", TVA: " + getTauxTVA() + "]";
     }

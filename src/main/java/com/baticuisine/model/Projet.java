@@ -119,4 +119,10 @@ public class Projet {
         setCoutTotal(total); // Met à jour le coût total
         return total;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %s | Nom: %s | Client: %s | Coût Total: %.2f €",
+                id, nomProjet, (client != null ? client.getNom() : "Non spécifié"), coutTotal);
+    }
 }

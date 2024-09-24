@@ -37,4 +37,10 @@ public class MainDoeuvre extends Composant {
     public double calculerCoutTotal() {
         return getCoutUnitaire() * heuresTravail * productiviteOuvrier * (1 + getTauxTVA());
     }
+
+    public String toString() {
+        return "Main D'oeuvre [ID: " + getId() + ", Nom: " + getNom() +
+                ", Coût Unitaire: " + getCoutUnitaire() + ", Quantité: " + getQuantite() +
+                ", TVA: " + getTauxTVA() + "]";
+    }
 }

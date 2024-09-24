@@ -84,4 +84,3 @@ public class Devis {
         this.client = client;
     }
 }
-
