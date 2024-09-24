@@ -66,6 +66,6 @@ public abstract class Composant {
         this.tauxTVA = tauxTVA;
     }
 
-    // Méthode abstraite pour calculer le coût total
+
     public abstract double calculerCoutTotal();
 }

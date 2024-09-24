@@ -96,7 +96,10 @@ public class MaterialRepositoryImpl implements ComposantRepository<Material> {
         String query = "DELETE FROM materiau WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if  (affectedRows == 0){
+                throw new RuntimeException("no row affected when delete the materiels");
+            }
         }
     }
 }

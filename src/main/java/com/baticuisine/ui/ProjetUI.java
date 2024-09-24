@@ -249,11 +249,14 @@ public class ProjetUI {
         if (projets.isEmpty()) {
             System.out.println("Aucun projet trouvé.");
         } else {
+            System.out.println("=== Liste des Projets ===");
             for (Projet projet : projets) {
-                System.out.println(projet);
+                System.out.println(projet.toString());
+                System.out.println("---------------------------------------------------");
             }
         }
     }
+
 
     private void calculerCoutProjet() {
         System.out.println("--- Calculer le coût d'un projet ---");

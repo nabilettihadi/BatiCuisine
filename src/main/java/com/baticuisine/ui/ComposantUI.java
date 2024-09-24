@@ -249,19 +249,27 @@ public class ComposantUI {
             System.out.print("Entrez l'ID du composant à supprimer (format UUID): ");
             UUID id = UUID.fromString(scanner.nextLine());
 
-
-            boolean deletedMainDoeuvre = mainDoeuvreService.delete(id);
-            if (deletedMainDoeuvre) {
-                System.out.println("Main d'œuvre supprimée avec succès.");
+            MainDoeuvre mainDoeuvre = mainDoeuvreService.findById(id);
+            if (mainDoeuvre != null) {
+                boolean deleted = mainDoeuvreService.delete(id);
+                if (deleted) {
+                    System.out.println("Main d'œuvre supprimée avec succès.");
+                } else {
+                    System.out.println("Erreur lors de la suppression de la main d'œuvre.");
+                }
                 return;
             }
 
-
-            boolean deletedMaterial = materialService.delete(id);
-            if (deletedMaterial) {
-                System.out.println("Matériau supprimé avec succès.");
+            Material material = materialService.findById(id);
+            if (material != null) {
+                boolean deleted = materialService.delete(id);
+                if (deleted) {
+                    System.out.println("Matériau supprimé avec succès.");
+                } else {
+                    System.out.println("Erreur lors de la suppression du matériau.");
+                }
             } else {
-                System.out.println("Composant non trouvé.");
+                System.out.println("Aucun composant trouvé avec cet ID.");
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la suppression du composant: " + e.getMessage());
