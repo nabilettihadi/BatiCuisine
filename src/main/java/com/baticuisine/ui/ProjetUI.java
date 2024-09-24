@@ -9,8 +9,12 @@ import main.java.com.baticuisine.model.Projet;
 import main.java.com.baticuisine.service.ClientService;
 import main.java.com.baticuisine.service.ProjetService;
 import main.java.com.baticuisine.service.ComposantService;
+import main.java.com.baticuisine.service.DevisService;
+import main.java.com.baticuisine.model.Devis;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
@@ -20,18 +24,20 @@ public class ProjetUI {
     private final ClientService clientService;
     private final ComposantService<Material> materiauService;
     private final ComposantService<MainDoeuvre> mainDoeuvreService;
+    private final DevisService devisService;
     private final Scanner scanner;
 
     public ProjetUI(ProjetService projetService, ClientService clientService,
                     ComposantService<Material> materiauService,
-                    ComposantService<MainDoeuvre> mainDoeuvreService) {
+                    ComposantService<MainDoeuvre> mainDoeuvreService,
+                    DevisService devisService) {
         this.projetService = projetService;
         this.clientService = clientService;
         this.materiauService = materiauService;
         this.mainDoeuvreService = mainDoeuvreService;
+        this.devisService = devisService;
         this.scanner = new Scanner(System.in);
     }
-
 
     public void startProjetMenu() throws SQLException {
         System.out.println("=== Bienvenue dans l'application de gestion des projets de rénovation de cuisines ===");
@@ -41,7 +47,7 @@ public class ProjetUI {
             System.out.println("1. Créer un nouveau projet");
             System.out.println("2. Afficher les projets existants");
             System.out.println("3. Calculer le coût d'un projet");
-            System.out.println("4. Quitter");
+            System.out.println("0. Quitter");
             System.out.print("Choisissez une option : ");
             int choix = scanner.nextInt();
             scanner.nextLine();
@@ -56,7 +62,7 @@ public class ProjetUI {
                 case 3:
                     calculerCoutProjet();
                     break;
-                case 4:
+                case 0:
                     continuer = false;
                     break;
                 default:
@@ -64,6 +70,7 @@ public class ProjetUI {
             }
         }
     }
+
 
     private void creerNouveauProjet() throws SQLException {
         System.out.println("--- Recherche de client ---");
@@ -103,25 +110,27 @@ public class ProjetUI {
             System.out.print("Entrez le nom du projet : ");
             projet.setNomProjet(scanner.nextLine());
 
-
             System.out.print("Entrez le pourcentage de marge bénéficiaire : ");
             projet.setMargeBeneficiaire(scanner.nextDouble());
             scanner.nextLine();
 
             ajouterMateriaux(projet);
             ajouterMainDoeuvre(projet);
-            calculerEtEnregistrerCout(projet);
-
             projet.setEtatProjet(EtatProjet.EN_COURS);
+
 
             try {
                 projetService.createProject(projet);
                 System.out.println("Projet enregistré avec succès !");
+
+
+                calculerEtEnregistrerCout(projet);
             } catch (SQLException e) {
                 System.err.println("Erreur lors de l'enregistrement du projet : " + e.getMessage());
             }
         }
     }
+
 
     private void ajouterMateriaux(Projet projet) throws SQLException {
         System.out.println("--- Ajout des matériaux ---");
@@ -141,7 +150,6 @@ public class ProjetUI {
             double tauxTVA = scanner.nextDouble();
             scanner.nextLine();
 
-
             Material materiau = new Material(
                     UUID.randomUUID(),
                     nom,
@@ -153,11 +161,9 @@ public class ProjetUI {
                     coefficientQualite
             );
 
-
             materiauService.save(materiau);
             projet.ajouterMateriau(materiau);
             System.out.println("Matériau ajouté avec succès !");
-
 
             System.out.print("Voulez-vous ajouter un autre matériau ? (y/n) : ");
             if (!scanner.nextLine().equalsIgnoreCase("y")) {
@@ -165,7 +171,6 @@ public class ProjetUI {
             }
         }
     }
-
 
     private void ajouterMainDoeuvre(Projet projet) throws SQLException {
         System.out.println("--- Ajout de la main-d'œuvre ---");
@@ -206,7 +211,6 @@ public class ProjetUI {
         }
     }
 
-
     private void calculerEtEnregistrerCout(Projet projet) {
         System.out.println("--- Calcul du coût total ---");
         System.out.print("Souhaitez-vous appliquer une TVA au projet ? (y/n) : ");
@@ -229,7 +233,6 @@ public class ProjetUI {
         System.out.println("--- Résultat du Calcul ---");
         System.out.println("Nom du projet : " + projet.getNomProjet());
         System.out.println("Client : " + projet.getClient().getNom());
-
         System.out.println("Coût total final du projet : " + coutTotal + " €");
 
         System.out.println("--- Enregistrement du Devis ---");
@@ -239,6 +242,18 @@ public class ProjetUI {
         String dateValidite = scanner.nextLine();
         System.out.print("Souhaitez-vous enregistrer le devis ? (y/n) : ");
         if (scanner.nextLine().equalsIgnoreCase("y")) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            Devis devis = new Devis(
+                    UUID.randomUUID(),
+                    projet.getCoutTotal(),
+                    LocalDate.parse(dateEmission, formatter),
+                    LocalDate.parse(dateValidite, formatter),
+                    false,
+                    projet,
+                    projet.getClient()
+            );
+
+            devisService.createDevis(devis);
             System.out.println("Devis enregistré avec succès !");
         }
         System.out.println("--- Fin du projet ---");
@@ -256,7 +271,6 @@ public class ProjetUI {
             }
         }
     }
-
 
     private void calculerCoutProjet() {
         System.out.println("--- Calculer le coût d'un projet ---");

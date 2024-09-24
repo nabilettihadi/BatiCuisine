@@ -40,14 +40,18 @@ public class Main {
 
             ComposantUI composantUI = new ComposantUI(mainDoeuvreService, materialService);
 
-            ProjetRepositoryImpl projetRepository = new ProjetRepositoryImpl(connection);
-            ProjetService projetService = new ProjetServiceImpl(projetRepository);
-            ProjetUI projetUI = new ProjetUI(projetService, clientService, materialService, mainDoeuvreService);
-
             // Initialisation des Devis
             DevisRepositoryImpl devisRepository = new DevisRepositoryImpl(connection);
             DevisService devisService = new DevisServiceImpl(devisRepository);
+
+
+            ProjetRepositoryImpl projetRepository = new ProjetRepositoryImpl(connection);
+            ProjetService projetService = new ProjetServiceImpl(projetRepository);
             DevisUI devisUI = new DevisUI(devisService, clientService, projetService);
+            ProjetUI projetUI = new ProjetUI(projetService, clientService, materialService, mainDoeuvreService, devisService);
+
+
+
 
             // Menu principal
             Scanner scanner = new Scanner(System.in);
