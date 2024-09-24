@@ -76,12 +76,12 @@ public class MaterialRepositoryImpl implements ComposantRepository<Material> {
 
     @Override
     public void update(Material material) throws SQLException {
-        String query = "UPDATE materiau SET nom = ?, cout_unitaire = ?, quantite = ?,type_composant = ?, taux_tva = ?, cout_transport = ?, coefficient_qualite = ? WHERE id = ?";
+        String query = "UPDATE materiau SET nom = ?, cout_unitaire = ?, quantite = ?, type_composant = ?, taux_tva = ?, cout_transport = ?, coefficient_qualite = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, material.getNom());
             stmt.setDouble(2, material.getCoutUnitaire());
-            stmt.setObject(3, material.getTypeComposant());
-            stmt.setDouble(4, material.getQuantite());
+            stmt.setDouble(3, material.getQuantite());
+            stmt.setObject(4, material.getTypeComposant().name(),Types.OTHER);
             stmt.setDouble(5, material.getTauxTVA());
             stmt.setDouble(6, material.getCoutTransport());
             stmt.setDouble(7, material.getCoefficientQualite());
@@ -89,6 +89,7 @@ public class MaterialRepositoryImpl implements ComposantRepository<Material> {
             stmt.executeUpdate();
         }
     }
+
 
     @Override
     public void delete(UUID id) throws SQLException {
