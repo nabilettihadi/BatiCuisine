@@ -85,4 +85,23 @@ public class ClientRepositoryImpl implements ClientRepository {
             stmt.executeUpdate();
         }
     }
+
+    @Override
+    public Client findByName(String nomClient) throws SQLException {
+        String query = "SELECT * FROM client WHERE nom = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, nomClient);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    UUID id = (UUID) rs.getObject("id");
+                    String adresse = rs.getString("adresse");
+                    String telephone = rs.getString("telephone");
+                    boolean estProfessionnel = rs.getBoolean("Professionnel");
+                    return new Client(id, nomClient, adresse, telephone, estProfessionnel);
+                }
+            }
+        }
+        return null;
+    }
+
 }

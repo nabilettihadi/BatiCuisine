@@ -39,5 +39,10 @@ public class ClientServiceImpl implements ClientService {
     public void delete(UUID id) throws SQLException {
         clientRepository.delete(id);
     }
+    @Override
+    public Client findByName(String nomClient) throws SQLException {
+        return clientRepository.findByName(nomClient);
+    }
+
 }
 

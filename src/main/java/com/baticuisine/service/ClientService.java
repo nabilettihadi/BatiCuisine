@@ -12,4 +12,5 @@ public interface ClientService {
     Client findById(UUID id) throws SQLException;
     void update(Client client) throws SQLException;
     void delete(UUID id) throws SQLException;
+    Client findByName(String nomClient) throws SQLException;
 }

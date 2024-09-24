@@ -188,32 +188,13 @@ public class ComposantUI {
 
 
         Material material = materialService.findById(id);
+
         if (material != null) {
             System.out.println("Composant trouvé (MATERIAL) : ");
             System.out.println(material);
         } else {
             System.out.println("Aucun composant trouvé avec cet ID.");
         }
-    }
-
-    private void afficherDetailsComposant(Composant composant) {
-        System.out.println("ID: " + composant.getId());
-        System.out.println("Nom: " + composant.getNom());
-        System.out.println("Coût Unitaire: " + composant.getCoutUnitaire());
-        System.out.println("Quantité: " + composant.getQuantite());
-        System.out.println("Taux de TVA: " + composant.getTauxTVA());
-        System.out.println("Coût Total: " + composant.calculerCoutTotal());
-
-        if (composant instanceof MainDoeuvre) {
-            MainDoeuvre mainDoeuvre = (MainDoeuvre) composant;
-            System.out.println("Heures de Travail: " + mainDoeuvre.getHeuresTravail());
-            System.out.println("Productivité Ouvrier: " + mainDoeuvre.getProductiviteOuvrier());
-        } else if (composant instanceof Material) {
-            Material material = (Material) composant;
-            System.out.println("Coût de Transport: " + material.getCoutTransport());
-            System.out.println("Coefficient de Qualité: " + material.getCoefficientQualite());
-        }
-        System.out.println("---------------------------");
     }
 
     private void updateComposant() {

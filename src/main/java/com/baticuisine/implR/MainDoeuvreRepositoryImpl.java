@@ -81,10 +81,10 @@ public class MainDoeuvreRepositoryImpl implements ComposantRepository<MainDoeuvr
             stmt.setDouble(2, composant.getCoutUnitaire());
             stmt.setDouble(3, composant.getQuantite());
             stmt.setObject( 4,composant.getTypeComposant().name(), Types.OTHER);
-            stmt.setDouble(4, composant.getTauxTVA());
-            stmt.setDouble(5, composant.getHeuresTravail());
-            stmt.setDouble(6, composant.getProductiviteOuvrier());
-            stmt.setObject(7, composant.getId());
+            stmt.setDouble(5, composant.getTauxTVA());
+            stmt.setDouble(6, composant.getHeuresTravail());
+            stmt.setDouble(7, composant.getProductiviteOuvrier());
+            stmt.setObject(8, composant.getId());
             stmt.executeUpdate();
         }
     }
